@@ -9,3 +9,10 @@ Database Tables:
 Book( id, title, author, isbn, category, publisher, total_copies, available_copy)
 Member( id, name, email, phone, address, joined_date)
 IssueRecord( id, member_id, book_id, issue_date, due_date, return_date, fine)
+
+
+Functionality:
+
+Member: 
+1. Member get request for retrive all members.
+2. Member post request for store a new member.

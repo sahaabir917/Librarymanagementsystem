@@ -28,23 +28,7 @@ public class MemberService {
 
     }
 
-//    public boolean addNewMember(Member member) {
-//
-////        Optional<Member> getStudentEmail = memberRepository.findMemberByEmail(member.getEmail());
-////        if(getStudentEmail.isPresent()){
-//////            throw new IllegalStateException("Email Already taken");
-////            return false;
-////        }
-//        member.setId(0);
-//
-//        memberRepository.save(member);
-//            System.out.println(member);
-//            return true;
-//
-//
-//
-//
-//    }
+
 
 
 public boolean addNewMember(Member member) {
