@@ -26,9 +26,6 @@ public class MemberController {
     }
 
 
-
-
-
     @PostMapping("/addNewMember")
     public ResponseEntity<ApiResponse> addNewMember(@RequestBody Member member) {
         boolean created = memberService.addNewMember(member);
