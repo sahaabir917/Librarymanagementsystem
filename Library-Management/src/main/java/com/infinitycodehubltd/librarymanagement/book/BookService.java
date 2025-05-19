@@ -1,9 +1,11 @@
 package com.infinitycodehubltd.librarymanagement.book;
 
+import com.infinitycodehubltd.librarymanagement.user.Member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookService {
@@ -27,4 +29,20 @@ public class BookService {
     }
 
 
+    public boolean addNewBook(Book book) {
+
+        if (book.getId() != 0 && !bookRepository.existsById(book.getId())) {
+            return false; // Or throw custom exception
+        }
+
+        Optional<Book> existing = bookRepository.findByIsbn(book.getIsbn());
+
+        if (existing.isPresent()) {
+            return false; // email already exists
+        }
+
+        book.setId(0); // Always save as a new entity
+        bookRepository.save(book);
+        return true;
+    }
 }

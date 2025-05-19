@@ -24,11 +24,12 @@ public class Member {
     private String phone;
     private String address;
     private String joined_date;
+    private String password;
 
     public Member() {
     }
 
-    public Member(String name,  String email, String phone, String address, String joined_date, long id) {
+    public Member(String name,  String email, String phone, String address, String joined_date, long id, String password) {
         this.name = name;
 
         this.email = email;
@@ -36,15 +37,17 @@ public class Member {
         this.address = address;
         this.joined_date = joined_date;
         this.id = id;
+        this.password = password;
     }
 
-    public Member(long id, String name, String email, String phone, String address, String joined_date) {
+    public Member(long id, String name, String email, String phone, String address, String joined_date, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.address = address;
         this.joined_date = joined_date;
+        this.password = password;
     }
 
     public long getId() {
@@ -98,6 +101,13 @@ public class Member {
         this.joined_date = joined_date;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     @Override
     public String toString() {
@@ -108,6 +118,7 @@ public class Member {
                 ", address='" + address + '\'' +
                 ", joined_date='" + joined_date + '\'' +
                 ", mid=" + id +
+                ",password=" + password+
                 '}';
     }
 }

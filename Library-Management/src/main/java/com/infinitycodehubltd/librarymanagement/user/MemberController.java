@@ -14,6 +14,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
+
     @Autowired                                              //dependency injection
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
@@ -25,6 +26,7 @@ public class MemberController {
         return memberService.getMember();
     }
 
+    //post request for new member
 
     @PostMapping("/addNewMember")
     public ResponseEntity<ApiResponse> addNewMember(@RequestBody Member member) {
