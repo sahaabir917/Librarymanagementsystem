@@ -16,3 +16,6 @@ Functionality:
 Member: 
 1. Member get request for retrive all members.
 2. Member post request for store a new member.
+3. Request for store a new record of the book that issued by a member.
+4. My issued book list
+5. Change the status of the issued book record and also the update the book availability increase when someone return the issued books.
