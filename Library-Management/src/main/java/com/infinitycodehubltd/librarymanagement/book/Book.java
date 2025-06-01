@@ -24,7 +24,7 @@ public class Book {
     private int available_copy;
 
 
-
+    public Book() {}
 
     public static Book fromRow(Object[] row) {
         return new Book(

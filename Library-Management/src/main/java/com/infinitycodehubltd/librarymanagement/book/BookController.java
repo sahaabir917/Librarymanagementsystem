@@ -10,12 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "api/books")
+@RequestMapping(path = "/admin")
 public class BookController {
 
 
@@ -32,7 +33,7 @@ public class BookController {
         return bookService.getBooks();
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/addNewBook")
     public ResponseEntity<ApiResponse> addNewBook(@RequestBody Book book) {
         boolean created = bookService.addNewBook(book);
@@ -46,6 +47,7 @@ public class BookController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'USER')")
     @PostMapping("/searchByTitleAuthorIsbn")
     public ResponseEntity<List<Book>> getBookByTitleAuthorIsbn(@RequestBody query request){
         List<Book> books = bookService.getBookByTitleAuthorIsbn(request.getQuery());
