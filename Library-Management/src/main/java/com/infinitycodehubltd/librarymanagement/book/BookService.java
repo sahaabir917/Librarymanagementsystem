@@ -1,5 +1,6 @@
 package com.infinitycodehubltd.librarymanagement.book;
 
+import com.infinitycodehubltd.librarymanagement.entity.MemberIssueDTO;
 import com.infinitycodehubltd.librarymanagement.user.Member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,5 +45,13 @@ public class BookService {
         book.setId(0); // Always save as a new entity
         bookRepository.save(book);
         return true;
+    }
+
+    public List<Book> getBookByTitleAuthorIsbn(String query) {
+        List<Object[]> rows = bookRepository.getBookByTitleAuthorIsbn(query);
+        System.out.println("response is : " +rows);
+        return rows.stream()
+                .map(Book::fromRow)
+                .toList();
     }
 }

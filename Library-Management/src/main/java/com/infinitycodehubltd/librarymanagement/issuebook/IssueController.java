@@ -4,12 +4,9 @@ package com.infinitycodehubltd.librarymanagement.issuebook;
 import com.infinitycodehubltd.librarymanagement.apiresponse.ApiResponse;
 import com.infinitycodehubltd.librarymanagement.book.Book;
 import com.infinitycodehubltd.librarymanagement.book.BookRepository;
-import com.infinitycodehubltd.librarymanagement.entity.MemberIdRequest;
-import com.infinitycodehubltd.librarymanagement.entity.MemberIssueDTO;
-import com.infinitycodehubltd.librarymanagement.entity.ReturnUpdateRequest;
+import com.infinitycodehubltd.librarymanagement.entity.*;
 import com.infinitycodehubltd.librarymanagement.user.Member;
 import com.infinitycodehubltd.librarymanagement.user.MemberRepository;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,38 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
-
-//@RestController
-//@RequestMapping(path = "api/issuebook")
-//public class IssueController {
-//
-//    private final IssueService issueService;
-//
-//    @Autowired
-//    public IssueController(IssueService issueService) {
-//        this.issueService = issueService;
-//    }
-//
-//    @GetMapping
-//    public List<IssueBook> getAllIssueBook(){
-//        return issueService.getAllIssueBook();
-//    }
-//
-//    @PostMapping("/addNewBookIssue")
-//    public ResponseEntity<ApiResponse> addNewBookIssue(@RequestBody IssueBook issueBook){
-//        boolean created = issueService.addNewIssueBook(issueBook);
-//
-//        if (created) {
-//            return ResponseEntity.status(HttpStatus.CREATED)
-//                    .body(new ApiResponse("New book issued", 201));
-//        } else {
-//            return ResponseEntity.status(HttpStatus.CONFLICT)
-//                    .body(new ApiResponse("Something went wrong please contact with admin", 409));
-//        }
-//    }
-//}
-
-
 
 @RestController
 @RequestMapping("/api/issuebook")
@@ -98,9 +63,9 @@ public class IssueController {
 
         if (updatedIssue != null) {
 
-            System.out.println("Book id is : " +updatedIssue.getBook().getId());
+            System.out.println("Book id is : " + updatedIssue.getBook().getId());
 
-            try{
+            try {
                 issueService.updateBookQuantity(updatedIssue.getBook().getId());
                 return ResponseEntity.ok(updatedIssue);  // Returns the updated IssueBook as JSON
             } catch (Exception e) {
@@ -118,9 +83,26 @@ public class IssueController {
     public ResponseEntity<List<MemberIssueDTO>> getIssuedBooksByPost(@RequestBody MemberIdRequest request) {
         Long memberId = request.getMemberId();
         List<MemberIssueDTO> issuedBooks = issueService.getMyIssuedBooks(memberId);
-        System.out.println("/member/issued-books"+issuedBooks);
+        System.out.println("/member/issued-books" + issuedBooks);
         return ResponseEntity.ok(issuedBooks);
     }
 
+    @PostMapping("/search/byIssuedId")
+    public ResponseEntity<MemberIssueDTO> searchIssueBook(@RequestBody issueIdRequest request) {
+        long issueId = request.getIssueId();
+        MemberIssueDTO issuedBook = issueService.searchIssueBook(issueId);
+        return ResponseEntity.ok(issuedBook);
+    }
+
+    @PostMapping("/search/byBookAuthorTitleIsbn")
+    public ResponseEntity<MemberIssueDTO> searchIssueBookByTitle(@RequestBody query request){
+        String query = request.getQuery();
+        MemberIssueDTO issuedBook = issueService.searchIssueBookByTitle(query);
+        return ResponseEntity.ok(issuedBook);
+    }
+
+
 }
+
+
 
