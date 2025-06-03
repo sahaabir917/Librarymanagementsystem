@@ -92,19 +92,19 @@ public class IssueService {
 
     public MemberIssueDTO searchIssueBook(long issueId) {
         List<Object[]> result = issueRepository.searchIssueBook(issueId);
-        if (result.isEmpty()) {
+        if (result == null || result.isEmpty()) {
             throw new RuntimeException("No result found for issueId: " + issueId);
         }
-        Object[] row = result.getFirst();
+        Object[] row = result.get(0);
         return MemberIssueDTO.fromRow(row);
     }
 
     public MemberIssueDTO searchIssueBookByTitle(String query) {
         List<Object[]> result = issueRepository.searchIssueBookByTitle(query);
-        if(result.isEmpty()){
+        if(result == null || result.isEmpty()){
             throw new RuntimeException("No result found for issueId: " + query);
         }
-        Object[] row = result.getFirst();
+        Object[] row = result.get(0);
         return MemberIssueDTO.fromRow(row);
     }
 }
