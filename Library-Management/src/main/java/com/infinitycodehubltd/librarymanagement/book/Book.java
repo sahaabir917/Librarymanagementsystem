@@ -1,6 +1,7 @@
 package com.infinitycodehubltd.librarymanagement.book;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 
 @Entity
@@ -23,7 +24,23 @@ public class Book {
     private int available_copy;
 
 
-    public Book() {
+    public Book() {}
+
+    public static Book fromRow(Object[] row) {
+        return new Book(
+                ((Number) row[0]).longValue(),        // id
+                row[1].toString(),                    // title
+                row[2].toString(),                    // author
+                row[3].toString(),                    // isbn
+                row[4].toString(),                    // category
+                row[5].toString(),                    // publisher
+                Integer.parseInt(row[6].toString()),    // total_copies
+                Integer.parseInt(row[7].toString())          // available_copy
+        );
+    }
+
+
+    public Book(long l, String author, String isbn, String category, String publisher, int availableCopy, int totalCopies) {
     }
 
     public Book(long id, String title, String isbn, String author, String category, String publisher, int total_copies, int available_copy) {

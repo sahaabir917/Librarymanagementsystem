@@ -88,4 +88,23 @@ public class IssueService {
                 .map(MemberIssueDTO::fromRow)
                 .toList();
     }
+
+
+    public MemberIssueDTO searchIssueBook(long issueId) {
+        List<Object[]> result = issueRepository.searchIssueBook(issueId);
+        if (result.isEmpty()) {
+            throw new RuntimeException("No result found for issueId: " + issueId);
+        }
+        Object[] row = result.getFirst();
+        return MemberIssueDTO.fromRow(row);
+    }
+
+    public MemberIssueDTO searchIssueBookByTitle(String query) {
+        List<Object[]> result = issueRepository.searchIssueBookByTitle(query);
+        if(result.isEmpty()){
+            throw new RuntimeException("No result found for issueId: " + query);
+        }
+        Object[] row = result.getFirst();
+        return MemberIssueDTO.fromRow(row);
+    }
 }
