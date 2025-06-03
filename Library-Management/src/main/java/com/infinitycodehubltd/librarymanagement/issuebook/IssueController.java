@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/issuebook")
@@ -97,9 +98,9 @@ public class IssueController {
     }
 
     @PostMapping("/search/byBookAuthorTitleIsbn")
-    public ResponseEntity<MemberIssueDTO> searchIssueBookByTitle(@RequestBody query request){
+    public ResponseEntity<Optional<MemberIssueDTO>> searchIssueBookByTitle(@RequestBody query request){
         String query = request.getQuery();
-        MemberIssueDTO issuedBook = issueService.searchIssueBookByTitle(query);
+        Optional<MemberIssueDTO> issuedBook = issueService.searchIssueBookByTitle(query);
         return ResponseEntity.ok(issuedBook);
     }
 

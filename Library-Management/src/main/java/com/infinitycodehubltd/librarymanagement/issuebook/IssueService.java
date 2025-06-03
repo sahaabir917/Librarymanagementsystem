@@ -99,12 +99,12 @@ public class IssueService {
         return MemberIssueDTO.fromRow(row);
     }
 
-    public MemberIssueDTO searchIssueBookByTitle(String query) {
+    public Optional<MemberIssueDTO> searchIssueBookByTitle(String query) {
         List<Object[]> result = issueRepository.searchIssueBookByTitle(query);
-        if(result == null || result.isEmpty()){
-            throw new RuntimeException("No result found for issueId: " + query);
+        if (result == null || result.isEmpty()) {
+            return Optional.empty();
         }
         Object[] row = result.get(0);
-        return MemberIssueDTO.fromRow(row);
+        return Optional.of(MemberIssueDTO.fromRow(row));
     }
 }
