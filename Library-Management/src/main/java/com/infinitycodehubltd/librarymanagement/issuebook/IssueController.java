@@ -59,7 +59,7 @@ public class IssueController {
         }
     }
 
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PostMapping("/updateReturnStatus")
     public ResponseEntity<?> updateReturnStatus(@RequestBody ReturnUpdateRequest request) {    // ? means any type
         IssueBook updatedIssue = issueService.updateReturnInfo(request.getId(), request.getReturnDate(), request.getFine());
@@ -82,6 +82,7 @@ public class IssueController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PostMapping("/member/issued-books")
     public ResponseEntity<List<MemberIssueDTO>> getIssuedBooksByPost(@RequestBody MemberIdRequest request) {
         Long memberId = request.getMemberId();
@@ -90,6 +91,7 @@ public class IssueController {
         return ResponseEntity.ok(issuedBooks);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PostMapping("/search/byIssuedId")
     public ResponseEntity<MemberIssueDTO> searchIssueBook(@RequestBody issueIdRequest request) {
         long issueId = request.getIssueId();
@@ -97,6 +99,8 @@ public class IssueController {
         return ResponseEntity.ok(issuedBook);
     }
 
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF','USER')")
     @PostMapping("/search/byBookAuthorTitleIsbn")
     public ResponseEntity<Optional<MemberIssueDTO>> searchIssueBookByTitle(@RequestBody query request){
         String query = request.getQuery();

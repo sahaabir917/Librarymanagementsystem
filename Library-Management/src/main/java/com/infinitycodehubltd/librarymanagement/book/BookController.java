@@ -29,7 +29,7 @@ public class BookController {
 
 
     @GetMapping
-    public List<Book> getBooks(){
+    public List<Book> getBooks() {
         return bookService.getBooks();
     }
 
@@ -49,13 +49,10 @@ public class BookController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'USER')")
     @PostMapping("/searchByTitleAuthorIsbn")
-    public ResponseEntity<List<Book>> getBookByTitleAuthorIsbn(@RequestBody query request){
+    public ResponseEntity<List<Book>> getBookByTitleAuthorIsbn(@RequestBody query request) {
         List<Book> books = bookService.getBookByTitleAuthorIsbn(request.getQuery());
         return ResponseEntity.ok(books);
     }
-
-
-
 
 
 }
