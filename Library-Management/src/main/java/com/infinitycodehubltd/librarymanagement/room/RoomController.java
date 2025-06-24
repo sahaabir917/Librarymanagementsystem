@@ -39,8 +39,8 @@ public class RoomController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'USER')")
-    @GetMapping
-    public List<Rooms> getBooks() {
+    @GetMapping("/getAllRooms")
+    public List<Rooms> getRoomList() {
         return roomService.getRoomList();
     }
 

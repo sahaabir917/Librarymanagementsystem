@@ -30,6 +30,13 @@ public class IssueController {
     @Autowired
     private BookRepository bookRepo;
 
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+    @GetMapping("/getIssuedBook")
+    public List<IssueBook> getIssuedBooks(){
+        return issueService.getAllIssueBook();
+    }
+
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @PostMapping("/addNewBookIssue")
     public ResponseEntity<?> addNewBookIssue(@RequestBody IssueDto request) {

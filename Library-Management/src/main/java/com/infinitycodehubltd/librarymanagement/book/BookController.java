@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+//@CrossOrigin("*")
 @RestController
 @RequestMapping(path = "/admin")
 public class BookController {
@@ -27,8 +28,8 @@ public class BookController {
         this.bookService = bookService;
     }
 
-
-    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'USER')")
+    @GetMapping("/getAllBooks")
     public List<Book> getBooks() {
         return bookService.getBooks();
     }
