@@ -25,6 +25,7 @@ public class IssueBook {
     private String returnDate;
     private double fine;
     private String status;
+    private Long returnedByUserId;
 
     //foreign key
     @ManyToOne
@@ -127,6 +128,14 @@ public class IssueBook {
         this.status = status;
     }
 
+    public Long getReturnedByUserId() {
+        return returnedByUserId;
+    }
+
+    public void setReturnedByUserId(Long returnedByUserId) {
+        this.returnedByUserId = returnedByUserId;
+    }
+
     @Override
     public String toString() {
         return "IssueBook{" +
@@ -138,6 +147,7 @@ public class IssueBook {
                 ", member=" + member +
                 ", book=" + book +
                 ",status=" + status+
+                ", returnedByUserId=" + returnedByUserId +
                 '}';
     }
 }
