@@ -3,11 +3,17 @@ package com.infinitycodehubltd.librarymanagement.issuebook;
 import com.infinitycodehubltd.librarymanagement.book.Book;
 import com.infinitycodehubltd.librarymanagement.book.BookRepository;
 import com.infinitycodehubltd.librarymanagement.entity.MemberIssueDTO;
+import com.infinitycodehubltd.librarymanagement.entity.ReturnItemResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class IssueService {
@@ -106,5 +112,47 @@ public class IssueService {
         }
         Object[] row = result.get(0);
         return Optional.of(MemberIssueDTO.fromRow(row));
+    }
+
+    @Transactional
+    public List<ReturnItemResult> bulkReturnBooks(Long userId, List<Long> issueBookIds, Long performedByUserId) {
+        List<Long> uniqueIds = issueBookIds.stream().distinct().collect(Collectors.toList());
+        if (uniqueIds.size() != issueBookIds.size()) {
+            throw new RuntimeException("Duplicate issueBookIds in request");
+        }
+
+        String returnDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        List<ReturnItemResult> results = new ArrayList<>();
+
+        for (Long issueBookId : issueBookIds) {
+            IssueBook issue = issueRepository.findById(issueBookId)
+                    .orElseThrow(() -> new RuntimeException("IssueBook not found for id: " + issueBookId));
+
+            if ("Returned".equals(issue.getStatus())) {
+                throw new RuntimeException("Book with issueBookId " + issueBookId + " is already returned");
+            }
+
+            if (issue.getMember().getId() != userId.longValue()) {
+                throw new RuntimeException("IssueBook " + issueBookId + " does not belong to user " + userId);
+            }
+
+            issue.setReturnDate(returnDate);
+            issue.setStatus("Returned");
+            issue.setReturnedByUserId(performedByUserId);
+            issueRepository.save(issue);
+
+            updateBookQuantity(issue.getBook().getId());
+
+            results.add(new ReturnItemResult(issueBookId, true, "Book returned successfully"));
+        }
+
+        return results;
+    }
+
+    public List<MemberIssueDTO> getReturnHistory(Long userId) {
+        List<Object[]> rows = (userId != null)
+                ? issueRepository.findReturnedBooksByUserId(userId)
+                : issueRepository.findAllReturnedBooks();
+        return rows.stream().map(MemberIssueDTO::fromRow).toList();
     }
 }

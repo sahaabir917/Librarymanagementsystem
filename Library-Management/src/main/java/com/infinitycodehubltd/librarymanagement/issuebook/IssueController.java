@@ -11,11 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/issuebook")
@@ -115,8 +117,65 @@ public class IssueController {
         return ResponseEntity.ok(issuedBook);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'USER')")
+    @PostMapping("/return")
+    public ResponseEntity<?> returnBooks(@RequestBody BulkReturnRequest request) {
+        Member authenticatedMember = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (request.getUserId() == null || request.getItems() == null || request.getItems().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse("userId and items are required", 400));
+        }
+
+        String returnedBy = request.getReturnedBy();
+        if (returnedBy == null || (!returnedBy.equalsIgnoreCase("USER") && !returnedBy.equalsIgnoreCase("ADMIN"))) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse("returnedBy must be USER or ADMIN", 400));
+        }
+
+        Member.Role role = authenticatedMember.getRole();
+        boolean isAdminOrStaff = role == Member.Role.ADMIN || role == Member.Role.STAFF;
+
+        if (returnedBy.equalsIgnoreCase("USER") && !isAdminOrStaff) {
+            // USER can only return their own books
+            if (authenticatedMember.getId() != request.getUserId().longValue()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ApiResponse("You can only return your own books", 403));
+            }
+        } else if (returnedBy.equalsIgnoreCase("ADMIN") && !isAdminOrStaff) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiResponse("Only ADMIN or STAFF can process returns for other users", 403));
+        }
+
+        List<Long> issueBookIds = request.getItems().stream()
+                .map(BulkReturnRequest.ReturnItem::getIssueBookId)
+                .collect(Collectors.toList());
+
+        try {
+            List<ReturnItemResult> results = issueService.bulkReturnBooks(
+                    request.getUserId(), issueBookIds, authenticatedMember.getId());
+            return ResponseEntity.ok(results);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(e.getMessage(), 400));
+        }
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'USER')")
+    @GetMapping("/return-history")
+    public ResponseEntity<List<MemberIssueDTO>> getReturnHistory(@RequestParam(required = false) Long userId) {
+        Member authenticatedMember = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Member.Role role = authenticatedMember.getRole();
+        boolean isAdminOrStaff = role == Member.Role.ADMIN || role == Member.Role.STAFF;
+
+        Long effectiveUserId = userId;
+        if (!isAdminOrStaff) {
+            // USER can only view their own return history
+            effectiveUserId = authenticatedMember.getId();
+        }
+
+        List<MemberIssueDTO> history = issueService.getReturnHistory(effectiveUserId);
+        return ResponseEntity.ok(history);
+    }
 
 }
-
-
-

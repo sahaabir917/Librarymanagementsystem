@@ -66,5 +66,40 @@ public interface IssueRepository extends JpaRepository<IssueBook, Long> {
             """, nativeQuery = true)
     List<Object[]> searchIssueBookByTitle(String query);
 
+    @Query(value = """
+                SELECT
+            i.id AS issueId,
+            i.issue_date AS issueDate,
+            i.due_date AS dueDate,
+            i.return_date AS returnDate,
+            i.fine,
+            i.status,
+            m.name AS memberName,
+            b.title AS bookTitle
+            FROM issue_book i
+            JOIN member m ON m.id = i.member_id
+            JOIN book b ON b.id = i.book_id
+            WHERE i.status = 'Returned'
+            ORDER BY i.id DESC
+            """, nativeQuery = true)
+    List<Object[]> findAllReturnedBooks();
+
+    @Query(value = """
+                SELECT
+            i.id AS issueId,
+            i.issue_date AS issueDate,
+            i.due_date AS dueDate,
+            i.return_date AS returnDate,
+            i.fine,
+            i.status,
+            m.name AS memberName,
+            b.title AS bookTitle
+            FROM issue_book i
+            JOIN member m ON m.id = i.member_id
+            JOIN book b ON b.id = i.book_id
+            WHERE i.status = 'Returned' AND m.id = :userId
+            ORDER BY i.id DESC
+            """, nativeQuery = true)
+    List<Object[]> findReturnedBooksByUserId(@Param("userId") Long userId);
 
 }
