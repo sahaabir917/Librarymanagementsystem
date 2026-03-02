@@ -102,4 +102,23 @@ public interface IssueRepository extends JpaRepository<IssueBook, Long> {
             """, nativeQuery = true)
     List<Object[]> findReturnedBooksByUserId(@Param("userId") Long userId);
 
+    @Query(value = """
+            SELECT
+                b.id          AS bookId,
+                b.title       AS bookName,
+                m.id          AS userId,
+                m.email       AS userEmail,
+                i.due_date    AS returnDate,
+                CAST(CAST(SUBSTRING(i.due_date, 1, 10) AS DATE) - CURRENT_DATE AS INTEGER) AS remainingDays
+            FROM book b
+            JOIN issue_book i ON i.book_id = b.id
+            JOIN members m ON m.id = i.member_id
+            WHERE b.available_copy = 0
+              AND (i.status IS NULL OR i.status != 'Returned')
+              AND CAST(SUBSTRING(i.due_date, 1, 10) AS DATE) >= CURRENT_DATE
+              AND CAST(SUBSTRING(i.due_date, 1, 10) AS DATE) <= CURRENT_DATE + INTERVAL '5 days'
+            ORDER BY CAST(SUBSTRING(i.due_date, 1, 10) AS DATE) ASC
+            """, nativeQuery = true)
+    List<Object[]> findStockOutIssuers();
+
 }

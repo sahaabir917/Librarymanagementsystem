@@ -2,6 +2,7 @@ package com.infinitycodehubltd.librarymanagement.issuebook;
 
 import com.infinitycodehubltd.librarymanagement.book.Book;
 import com.infinitycodehubltd.librarymanagement.book.BookRepository;
+import com.infinitycodehubltd.librarymanagement.book.StockOutIssuerDTO;
 import com.infinitycodehubltd.librarymanagement.entity.MemberIssueDTO;
 import com.infinitycodehubltd.librarymanagement.entity.ReturnItemResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,5 +155,10 @@ public class IssueService {
                 ? issueRepository.findReturnedBooksByUserId(userId)
                 : issueRepository.findAllReturnedBooks();
         return rows.stream().map(MemberIssueDTO::fromRow).toList();
+    }
+
+    public List<StockOutIssuerDTO> getStockOutIssuers() {
+        List<Object[]> rows = issueRepository.findStockOutIssuers();
+        return rows.stream().map(StockOutIssuerDTO::fromRow).toList();
     }
 }
