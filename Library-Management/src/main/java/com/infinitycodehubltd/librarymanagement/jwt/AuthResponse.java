@@ -4,6 +4,7 @@ import com.infinitycodehubltd.librarymanagement.user.Member;
 
 public class AuthResponse {
     private String token;
+    private String refreshToken;
     private String email;
     private long userId;
     private String name;
@@ -12,8 +13,9 @@ public class AuthResponse {
 
 
 
-    public AuthResponse(String token, String email, long id, String phone) {
+    public AuthResponse(String token, String refreshToken, String email, long id, String phone) {
         this.token = token;
+        this.refreshToken = refreshToken;
         this.email = email;
         this.userId = id;
         this.phone = phone;
@@ -26,6 +28,14 @@ public class AuthResponse {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
     public String getEmail() {
