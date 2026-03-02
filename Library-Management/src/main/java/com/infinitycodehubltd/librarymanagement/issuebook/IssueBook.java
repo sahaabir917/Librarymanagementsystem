@@ -25,7 +25,7 @@ public class IssueBook {
     private String returnDate;
     private double fine;
     private String status;
-    private Long returnedByUserId;
+//    private Long returnedByUserId;
 
     //foreign key
     @ManyToOne
@@ -38,6 +38,10 @@ public class IssueBook {
     @ManyToOne
     @JoinColumn(name = "book_id", nullable= false)
     private Book book;
+
+    @ManyToOne
+    @JoinColumn(name= "member_id", nullable = true)
+    private Member returnedByUserId;
 
 
     public IssueBook(long id, String issueDate, String dueDate, String returnDate, double fine, Member member, Book book, String status) {
