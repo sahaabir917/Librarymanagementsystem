@@ -132,11 +132,11 @@ public class IssueBook {
         this.status = status;
     }
 
-    public Long getReturnedByUserId() {
+    public Member getReturnedByUserId() {
         return returnedByUserId;
     }
 
-    public void setReturnedByUserId(Long returnedByUserId) {
+    public void setReturnedByUserId(Member returnedByUserId) {
         this.returnedByUserId = returnedByUserId;
     }
 

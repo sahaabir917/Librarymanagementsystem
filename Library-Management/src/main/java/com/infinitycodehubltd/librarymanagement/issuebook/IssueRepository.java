@@ -121,4 +121,7 @@ public interface IssueRepository extends JpaRepository<IssueBook, Long> {
             """, nativeQuery = true)
     List<Object[]> findStockOutIssuers();
 
+    @Query("SELECT COUNT(i) FROM IssueBook i WHERE i.status = ?1")
+    long countByStatus(String status);
+
 }
