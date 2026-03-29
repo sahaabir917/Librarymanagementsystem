@@ -19,4 +19,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("SELECT s FROM Member s WHERE s.email = ?1")
     Optional<Member> findByEmail(String email);
 
+    @Query("SELECT COUNT(m) FROM Member m WHERE m.role = ?1")
+    long countByRole(Member.Role role);
+
 }

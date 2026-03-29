@@ -5,6 +5,8 @@ import com.infinitycodehubltd.librarymanagement.book.BookRepository;
 import com.infinitycodehubltd.librarymanagement.book.StockOutIssuerDTO;
 import com.infinitycodehubltd.librarymanagement.entity.MemberIssueDTO;
 import com.infinitycodehubltd.librarymanagement.entity.ReturnItemResult;
+import com.infinitycodehubltd.librarymanagement.user.Member;
+import com.infinitycodehubltd.librarymanagement.user.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,11 +24,14 @@ public class IssueService {
 
     private final IssueRepository issueRepository;
     private final BookRepository bookRepository;
+    private final MemberRepository memberRepository;
 
     @Autowired
-    public IssueService(IssueRepository issueRepository, BookRepository bookRepository) {
+    public IssueService(IssueRepository issueRepository, BookRepository bookRepository,
+                        MemberRepository memberRepository) {
         this.issueRepository = issueRepository;
         this.bookRepository = bookRepository;
+        this.memberRepository = memberRepository;
     }
 
 
@@ -139,7 +144,9 @@ public class IssueService {
 
             issue.setReturnDate(returnDate);
             issue.setStatus("Returned");
-            issue.setReturnedByUserId(performedByUserId);
+            Member performedBy = memberRepository.findById(performedByUserId)
+                    .orElseThrow(() -> new RuntimeException("Member not found for id: " + performedByUserId));
+            issue.setReturnedByUserId(performedBy);
             issueRepository.save(issue);
 
             updateBookQuantity(issue.getBook().getId());

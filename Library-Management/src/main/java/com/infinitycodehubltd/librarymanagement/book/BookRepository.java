@@ -25,4 +25,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
                        available_copy from Book WHERE title = :query OR isbn = :query OR publisher = :query OR author = :query
             """, nativeQuery = true)
     List<Object[]> getBookByTitleAuthorIsbn(String query);
+
+    @Query("SELECT COALESCE(SUM(b.available_copy), 0) FROM Book b")
+    long sumAvailableCopies();
+
 }
